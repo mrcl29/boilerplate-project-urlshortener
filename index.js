@@ -23,7 +23,7 @@ app.get('/api/hello', function(req, res) {
 });
 
 function esFormatoURL(str) {
-  const regex = /^https?:\/\/www\.[a-z0-9-]+(\.[a-z]{2,})+(\/.*)?$/i;
+  const regex = /^https?:\/\/(www\.)?[a-z0-9-]+(\.[a-z]{2,})+.*$/i;
   return regex.test(str);
 }
 
@@ -48,6 +48,17 @@ app.post('/api/shorturl', function(req, res) {
   num = num + 1;
   saved_urls[num] = url.toString();
   return res.json({ original_url : url.toString(), short_url : num });
+});
+
+app.get('/api/shorturl/:short_url', (req, res) => {
+  const short = req.params.short_url;
+  const originalUrl = saved_urls[short];
+  
+  if (originalUrl) {
+    return res.redirect(originalUrl);
+  } else {
+    return res.json({ error: 'No short URL found for the given input' });
+  }
 });
 
 app.listen(port, function() {
