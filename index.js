@@ -50,6 +50,17 @@ app.post('/api/shorturl', function(req, res) {
   return res.json({ original_url : url.toString(), short_url : num });
 });
 
+app.post('/api/shorturl', (req, res) => {
+  let url = req.body.url;
+  if (!url || !esFormatoURL(url)) {
+    return res.json({ error: 'invalid url' });
+  }
+
+  num++;
+  saved_urls[num] = url.toString();
+  return res.json({ original_url: url.toString(), short_url: num });
+});
+
 app.get('/api/shorturl/:short_url', (req, res) => {
   const short = req.params.short_url;
   const originalUrl = saved_urls[short];
